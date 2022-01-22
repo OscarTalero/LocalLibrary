@@ -2,7 +2,7 @@
 from django.db import models
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 import uuid # Required for unique book instances
-from datetime import date
+
 
 # Create your models here.
 class Genre(models.Model):
@@ -37,6 +37,11 @@ class Book(models.Model):
 
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
 
+    def display_genre(self):
+        """ Creates a string for the Genre. This is required to display genre in Admin."""
+        return ', '.join([genre.name for genre in self.genre.all()[:3]])
+    display_genre.short_description = 'Genre'
+    
     def __str__(self):
         """String for representing the Model object."""
         return self.title
@@ -73,7 +78,7 @@ class BookInstance(models.Model):
 
     def __str__ (self):
         """String for representing the Model object."""
-        return '{0} ({1})'.format(self.id, self.book.title)    
+        return '{0} {1} {2} {3}'.format(self.book.title, self.status, self.due_back, self.id)    
 
 class Author(models.Model):
     """Model representing an author."""
